@@ -9,9 +9,10 @@
 @font-face {
   font-family: 'FKKikaiChokoku';
   src: url('./fkKikaiChokoku.otf') format('opentype');
-  font-weight: normal;
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0000-FFFF, U+4E00-9FFF, U+3000-30FF, U+FF00-FFEF;
 }
 </style>
 <style>
@@ -35,6 +36,10 @@
     background: var(--white);
     color: var(--ink);
     overflow-x: hidden;
+  }
+
+  * {
+    font-family: 'FKKikaiChokoku', sans-serif !important;
   }
 
   /* ===== NAV ===== */
