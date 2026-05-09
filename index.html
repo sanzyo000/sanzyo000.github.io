@@ -602,6 +602,11 @@
       <h3 class="feature-title">高音質ストリーミング</h3>
       <p class="feature-desc">最大256kbpsのビットレートで高音質再生。loudnormフィルターで音量も自動で最適化されます。</p>
     </div>
+    <div class="feature-card reveal">
+      <p class="feature-num">07</p>
+      <h3 class="feature-title">MIDI再生</h3>
+      <p class="feature-desc">FluidSynthを使ってMIDIファイルをリアルタイムに変換して再生。GS・GM・FC・SC-88など多彩なSoundFontに対応。</p>
+    </div>
   </div>
 </section>
 
@@ -618,6 +623,7 @@
     <span class="source-tag"><span class="source-dot"></span>Spotify（プレイリスト）</span>
     <span class="source-tag"><span class="source-dot"></span>Discord 音声ファイル</span>
     <span class="source-tag"><span class="source-dot"></span>キーワード検索</span>
+    <span class="source-tag"><span class="source-dot"></span>MIDIファイル (FluidSynth)</span>
   </div>
 </section>
 
@@ -638,7 +644,7 @@
           <div class="cmd">w!play &lt;URL / キーワード&gt;</div>
           <div class="cmd-alias">w!p</div>
         </td>
-        <td class="cmd-desc">URLまたはキーワードで音楽を再生・検索します。プレイリストにも対応。</td>
+        <td class="cmd-desc">URLまたはキーワードで音楽を再生・検索します。プレイリスト・MIDIファイルにも対応。</td>
       </tr>
       <tr>
         <td>
@@ -670,6 +676,10 @@
       <tr>
         <td><div class="cmd">w!eq &lt;0–3&gt;</div></td>
         <td class="cmd-desc">イコライザーを変更します。0:通常 / 1:低音強化 / 2:中音強化 / 3:高音強化</td>
+      </tr>
+      <tr>
+        <td><div class="cmd">w!sf</div></td>
+        <td class="cmd-desc">MIDIファイル再生に使用するSoundFontを選択します。</td>
       </tr>
       <tr>
         <td><div class="cmd">w!help</div></td>
