@@ -607,6 +607,11 @@
       <h3 class="feature-title">MIDI再生</h3>
       <p class="feature-desc">FluidSynthを使ってMIDIファイルをリアルタイムに変換して再生。GS・GM・FC・SC-88など多彩なSoundFontに対応。</p>
     </div>
+    <div class="feature-card reveal">
+      <p class="feature-num">08</p>
+      <h3 class="feature-title">時報</h3>
+      <p class="feature-desc">毎時正時に予鈴・本鈴を自動で鳴らします。チャンネルを選ばず、s!zihouコマンドで簡単に起動できます。</p>
+    </div>
   </div>
 </section>
 
@@ -641,8 +646,699 @@
     <tbody>
       <tr>
         <td>
-          <div class="cmd">w!play &lt;URL / キーワード&gt;</div>
-          <div class="cmd-alias">w!p</div>
+          <div class="cmd">s!play &lt;URL / キーワード&gt;</div>
+          <div class="cmd-alias">s!p</div>
+        </td>
+        <td class="cmd-desc">URLまたはキーワードで音楽を再生・検索します。YouTube・ニコニコ・Spotify・MIDI・プレイリスト対応。プレイリストURLのindex指定にも対応。</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="cmd">s!skip</div>
+          <div class="cmd-alias">s!s &lt;数字&gt;</div>
+        </td>
+        <td class="cmd-desc">現在の曲をスキップします。数字を指定すると複数曲まとめてスキップできます（例: s!s 5）。</td>
+      </tr>
+      <tr>
+        <td><div class="cmd">s!stop</div></td>
+        <td class="cmd-desc">再生を停止してキューをクリアします。</td>
+      </tr>
+      <tr>
+        <td><div class="cmd">s!leave</div></td>
+        <td class="cmd-desc">ボイスチャンネルから退出します。</td>
+      </tr>
+      <tr>
+        <td><div class="cmd">s!queue</div></td>
+        <td class="cmd-desc">現在のキュー（待ち曲一覧）を表示します。</td>
+      </tr>
+      <tr>
+        <td><div class="cmd">s!loop</div></td>
+        <td class="cmd-desc">現在の曲を1曲ループします。もう一度実行するとOFFになります。</td>
+      </tr>
+      <tr>
+        <td><div class="cmd">s!mloop</div></td>
+        <td class="cmd-desc">プレイリスト全体をループします。もう一度実行するとOFFになります。</td>
+      </tr>
+      <tr>
+        <td><div class="cmd">s!eq &lt;0–3&gt;</div></td>
+        <td class="cmd-desc">イコライザーを変更します。0:通常 / 1:低音強化 / 2:中音強化 / 3:高音強化</td>
+      </tr>
+      <tr>
+        <td><div class="cmd">s!sf</div></td>
+        <td class="cmd-desc">MIDIファイル再生に使用するSoundFontを選択します。</td>
+      </tr>
+      <tr>
+        <td><div class="cmd">s!zihou</div></td>
+        <td class="cmd-desc">毎時正時チャイムを開始します。予鈴（523Hz）×3 → 本鈴（1046Hz）。<code>s!zihou stop</code> で停止。</td>
+      </tr>
+      <tr>
+        <td><div class="cmd">s!help</div></td>
+        <td class="cmd-desc">コマンド一覧を表示します。</td>
+      </tr>
+    </tbody>
+    </table>ml lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sanzyo music — Discord音楽BOT</title>
+<link rel="icon" href="https://cdn.discordapp.com/avatars/1434713314289651776/341af76dd0f3a5b9845d76d08fcd93d9.png?size=1024">
+<style>
+@font-face {
+  font-family: 'JFDotShinonome';
+  src: url('./JF-Dot-Shinonome14.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+</style>
+<style>
+  :root {
+    --white: #ffffff;
+    --off-white: #f8f7f4;
+    --light: #efefed;
+    --mid: #c8c6c0;
+    --dark: #1a1916;
+    --accent: #2d2926;
+    --ink: #3a3732;
+    --mark: #e8e3d8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'JFDotShinonome', sans-serif;
+    background: var(--white);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  * {
+    font-family: 'JFDotShinonome', sans-serif !important;
+    letter-spacing: 0.05em;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--light);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    text-decoration: none;
+    color: var(--dark);
+  }
+
+  .nav-logo img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
+
+  .nav-logo span {
+    font-family: 'JFDotShinonome', monospace;
+    font-size: 0.95rem;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--dark); }
+
+  .nav-invite {
+    background: var(--dark);
+    color: var(--white) !important;
+    padding: 0.5rem 1.2rem;
+    border-radius: 2px;
+    font-weight: 400 !important;
+    transition: opacity 0.2s !important;
+  }
+
+  .nav-invite:hover { opacity: 0.8; }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 3rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 30%, #f0ede6 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 10% 80%, #ece9e0 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-lines {
+    position: absolute;
+    top: 0; right: 0;
+    width: 50%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.06;
+  }
+
+  .hero-lines svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero-content {
+    position: relative;
+    max-width: 800px;
+  }
+
+  .hero-tag {
+    font-family: 'JFDotShinonome', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--mid);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .hero-tag::before {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 1px;
+    background: var(--mid);
+  }
+
+  .hero h1 {
+    font-family: 'JFDotShinonome', serif;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--dark);
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--mid);
+  }
+
+  .hero-desc {
+    font-size: 1.1rem;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--ink);
+    max-width: 480px;
+    margin-bottom: 3rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--dark);
+    color: var(--white);
+    padding: 0.9rem 2rem;
+    text-decoration: none;
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+    border-radius: 2px;
+    transition: opacity 0.2s;
+  }
+
+  .btn-primary:hover { opacity: 0.8; }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    color: var(--ink);
+    padding: 0.9rem 2rem;
+    text-decoration: none;
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+    border: 1px solid var(--mid);
+    border-radius: 2px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--dark);
+    color: var(--dark);
+  }
+
+  .hero-bot-img {
+    position: absolute;
+    right: 6%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow:
+      0 0 0 1px var(--light),
+      0 20px 60px rgba(0,0,0,0.08),
+      0 4px 12px rgba(0,0,0,0.04);
+    opacity: 0;
+    animation: fadeIn 1s 0.3s forwards;
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  /* ===== SECTION ===== */
+  section {
+    padding: 6rem 3rem;
+  }
+
+  .section-label {
+    font-family: 'JFDotShinonome', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 1px;
+    background: var(--mid);
+  }
+
+  /* ===== FEATURES ===== */
+  .features {
+    background: var(--off-white);
+    border-top: 1px solid var(--light);
+    border-bottom: 1px solid var(--light);
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0;
+    border: 1px solid var(--light);
+    margin-top: 1rem;
+  }
+
+  .feature-card {
+    padding: 2.5rem;
+    border-right: 1px solid var(--light);
+    border-bottom: 1px solid var(--light);
+    background: var(--white);
+    transition: background 0.2s;
+  }
+
+  .feature-card:hover {
+    background: var(--mark);
+  }
+
+  .feature-num {
+    font-family: 'JFDotShinonome', monospace;
+    font-size: 0.7rem;
+    color: var(--mid);
+    letter-spacing: 0.1em;
+    margin-bottom: 1.5rem;
+  }
+
+  .feature-title {
+    font-family: 'JFDotShinonome', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.8rem;
+    line-height: 1.3;
+  }
+
+  .feature-desc {
+    font-size: 0.88rem;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--ink);
+  }
+
+  /* ===== SOURCES ===== */
+  .sources-title {
+    font-family: 'JFDotShinonome', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 3rem;
+    line-height: 1.2;
+  }
+
+  .sources-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .source-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border: 1px solid var(--light);
+    border-radius: 2px;
+    font-family: 'JFDotShinonome', monospace;
+    font-size: 0.82rem;
+    color: var(--ink);
+    background: var(--white);
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .source-tag:hover {
+    border-color: var(--dark);
+    background: var(--mark);
+  }
+
+  .source-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--mid);
+  }
+
+  /* ===== COMMANDS ===== */
+  .commands {
+    background: var(--dark);
+    color: var(--white);
+  }
+
+  .commands .section-label {
+    color: rgba(255,255,255,0.3);
+  }
+
+  .commands .section-label::before {
+    background: rgba(255,255,255,0.3);
+  }
+
+  .commands-title {
+    font-family: 'JFDotShinonome', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 3rem;
+  }
+
+  .commands-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+  .commands-table th {
+    text-align: left;
+    padding: 0.8rem 1.2rem;
+    font-family: 'JFDotShinonome', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-weight: 400;
+  }
+
+  .commands-table td {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    vertical-align: top;
+    font-weight: 300;
+  }
+
+  .commands-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .commands-table tr:hover td {
+    background: rgba(255,255,255,0.03);
+  }
+
+  .cmd {
+    font-family: 'JFDotShinonome', monospace;
+    font-size: 0.85rem;
+    color: #d4c9a8;
+    white-space: nowrap;
+  }
+
+  .cmd-alias {
+    font-family: 'JFDotShinonome', monospace;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.25);
+    margin-top: 0.2rem;
+  }
+
+  .cmd-desc {
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+  }
+
+  /* ===== CTA ===== */
+  .cta {
+    text-align: center;
+    padding: 8rem 3rem;
+    background: var(--off-white);
+    border-top: 1px solid var(--light);
+  }
+
+  .cta h2 {
+    font-family: 'JFDotShinonome', serif;
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 1rem;
+    line-height: 1.15;
+  }
+
+  .cta p {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--ink);
+    margin-bottom: 2.5rem;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--dark);
+    color: rgba(255,255,255,0.4);
+    padding: 2.5rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    font-family: 'JFDotShinonome', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+  }
+
+  .footer-logo img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    opacity: 0.7;
+  }
+
+  /* ===== SCROLL ANIMATION ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero { padding: 6rem 1.5rem 4rem; }
+    .hero-bot-img { display: none; }
+    section { padding: 4rem 1.5rem; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="https://cdn.discordapp.com/avatars/1434713314289651776/341af76dd0f3a5b9845d76d08fcd93d9.png?size=1024" alt="sanzyo music">
+    <span>sanzyo music</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">機能</a></li>
+    <li><a href="#sources">対応サービス</a></li>
+    <li><a href="#commands">コマンド</a></li>
+    <li><a href="https://discord.com/oauth2/authorize?client_id=1434713314289651776&permissions=3213312&integration_type=0&scope=bot" class="nav-invite">導入する</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines">
+    <svg viewBox="0 0 500 800" preserveAspectRatio="none">
+      <line x1="0" y1="0" x2="500" y2="800" stroke="#1a1916" stroke-width="0.5"/>
+      <line x1="100" y1="0" x2="600" y2="800" stroke="#1a1916" stroke-width="0.5"/>
+      <line x1="200" y1="0" x2="700" y2="800" stroke="#1a1916" stroke-width="0.5"/>
+      <line x1="300" y1="0" x2="800" y2="800" stroke="#1a1916" stroke-width="0.5"/>
+      <line x1="-100" y1="0" x2="400" y2="800" stroke="#1a1916" stroke-width="0.5"/>
+    </svg>
+  </div>
+  <div class="hero-content">
+    <p class="hero-tag">Discord Music BOT</p>
+    <h1>Discord用<br>音楽BOT。</h1>
+    <p class="hero-desc">
+      sanzyo musicは、YouTube・ニコニコ動画・Spotifyなど多彩なサービスに対応したDiscord音楽BOTです。高音質で、シンプルに。
+    </p>
+    <div class="hero-actions">
+      <a href="https://discord.com/oauth2/authorize?client_id=1434713314289651776&permissions=3213312&integration_type=0&scope=bot" class="btn-primary">
+        サーバーに追加
+      </a>
+      <a href="#commands" class="btn-secondary">
+        コマンドを見る
+      </a>
+    </div>
+  </div>
+  <img
+    src="https://cdn.discordapp.com/avatars/1434713314289651776/341af76dd0f3a5b9845d76d08fcd93d9.png?size=1024"
+    alt="sanzyo music"
+    class="hero-bot-img"
+  >
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <p class="section-label">Features</p>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <p class="feature-num">01</p>
+      <h3 class="feature-title">多サービス対応</h3>
+      <p class="feature-desc">YouTube、ニコニコ動画、Spotify、Discordの音声ファイルなど、幅広いソースから音楽を再生できます。</p>
+    </div>
+    <div class="feature-card reveal">
+      <p class="feature-num">02</p>
+      <h3 class="feature-title">プレイリスト再生</h3>
+      <p class="feature-desc">YouTubeのプレイリストやSpotifyのアルバム・プレイリストをそのままキューに追加。まとめて楽しめます。</p>
+    </div>
+    <div class="feature-card reveal">
+      <p class="feature-num">03</p>
+      <h3 class="feature-title">イコライザー</h3>
+      <p class="feature-desc">低音強化・中音強化・高音強化の3モードを搭載。好みの音質に合わせて細かく調整できます。</p>
+    </div>
+    <div class="feature-card reveal">
+      <p class="feature-num">04</p>
+      <h3 class="feature-title">ループ再生</h3>
+      <p class="feature-desc">1曲ループとプレイリストループに対応。繰り返し聴きたい曲も、アルバムごとループも自在です。</p>
+    </div>
+    <div class="feature-card reveal">
+      <p class="feature-num">05</p>
+      <h3 class="feature-title">自動退出</h3>
+      <p class="feature-desc">ボイスチャンネルに誰もいなくなると、10秒後に自動で退出します。無駄な接続を残しません。</p>
+    </div>
+    <div class="feature-card reveal">
+      <p class="feature-num">06</p>
+      <h3 class="feature-title">高音質ストリーミング</h3>
+      <p class="feature-desc">最大256kbpsのビットレートで高音質再生。loudnormフィルターで音量も自動で最適化されます。</p>
+    </div>
+    <div class="feature-card reveal">
+      <p class="feature-num">07</p>
+      <h3 class="feature-title">MIDI再生</h3>
+      <p class="feature-desc">FluidSynthを使ってMIDIファイルをリアルタイムに変換して再生。GS・GM・FC・SC-88など多彩なSoundFontに対応。</p>
+    </div>
+  </div>
+</section>
+
+<!-- SOURCES -->
+<section id="sources">
+  <p class="section-label">対応サービス</p>
+  <h2 class="sources-title reveal">対応している<br>サービス一覧。</h2>
+  <div class="sources-list reveal">
+    <span class="source-tag"><span class="source-dot"></span>YouTube</span>
+    <span class="source-tag"><span class="source-dot"></span>YouTube プレイリスト</span>
+    <span class="source-tag"><span class="source-dot"></span>ニコニコ動画</span>
+    <span class="source-tag"><span class="source-dot"></span>Spotify（トラック）</span>
+    <span class="source-tag"><span class="source-dot"></span>Spotify（アルバム）</span>
+    <span class="source-tag"><span class="source-dot"></span>Spotify（プレイリスト）</span>
+    <span class="source-tag"><span class="source-dot"></span>Discord 音声ファイル</span>
+    <span class="source-tag"><span class="source-dot"></span>キーワード検索</span>
+    <span class="source-tag"><span class="source-dot"></span>MIDIファイル (FluidSynth)</span>
+  </div>
+</section>
+
+<!-- COMMANDS -->
+<section class="commands" id="commands">
+  <p class="section-label">Commands</p>
+  <h2 class="commands-title">コマンド<br>一覧。</h2>
+  <table class="commands-table">
+    <thead>
+      <tr>
+        <th>コマンド</th>
+        <th>説明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div class="cmd">s!play &lt;URL / キーワード&gt;</div>
+          <div class="cmd-alias">s!p</div>
         </td>
         <td class="cmd-desc">URLまたはキーワードで音楽を再生・検索します。プレイリスト・MIDIファイルにも対応。</td>
       </tr>
