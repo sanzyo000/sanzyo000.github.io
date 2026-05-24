@@ -4,6 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>sanzyo music — Discord音楽BOT</title>
+
+<!-- ========== SECURITY HEADERS (GitHub Pages はHTTPヘッダー設定不可のためmeta要素で代替) ========== -->
+<!-- Content Security Policy: XSS・データインジェクション防止
+     script-src unsafe-inline: 年表示・スクロールアニメのインラインJSのみ許可、外部JSは禁止
+     img-src: 自ドメイン + Discord CDNのみ
+     connect-src none: fetch/XHR/WebSocket全禁止（静的サイト）
+     form-action none: フォームサブミット禁止
+     frame-ancestors none: iframeクリックジャッキング禁止
+     upgrade-insecure-requests: http→https自動昇格 -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https://cdn.discordapp.com data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests;">
+<!-- X-Frame-Options: クリックジャッキング防止 (いかなるiframeにも埋め込み禁止) -->
+<meta http-equiv="X-Frame-Options" content="DENY">
+<!-- X-Content-Type-Options: MIMEスニッフィング防止 (JSをHTMLに偽装する攻撃を防ぐ) -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<!-- Referrer-Policy: Discord等外部リンクへのURLパラメータ漏洩防止 -->
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<!-- IE互換モード強制無効化: IE独自XSSフィルター回避手法を封鎖 -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <link rel="icon" href="https://cdn.discordapp.com/avatars/1434713314289651776/341af76dd0f3a5b9845d76d08fcd93d9.png?size=1024">
 <style>
 @font-face {
@@ -530,7 +548,7 @@
     <li><a href="#features">機能</a></li>
     <li><a href="#sources">対応サービス</a></li>
     <li><a href="#commands">コマンド</a></li>
-    <li><a href="https://discord.com/oauth2/authorize?client_id=1434713314289651776&permissions=3213312&integration_type=0&scope=bot" class="nav-invite">導入する</a></li>
+    <li><a href="https://discord.com/oauth2/authorize?client_id=1434713314289651776&permissions=3213312&integration_type=0&scope=bot" class="nav-invite" rel="noopener noreferrer" target="_blank">導入する</a></li>
   </ul>
 </nav>
 
@@ -553,7 +571,7 @@
       sanzyo musicは、YouTube・ニコニコ動画・Spotifyなど多彩なサービスに対応したDiscord音楽BOTです。高音質で、シンプルに。
     </p>
     <div class="hero-actions">
-      <a href="https://discord.com/oauth2/authorize?client_id=1434713314289651776&permissions=3213312&integration_type=0&scope=bot" class="btn-primary">
+      <a href="https://discord.com/oauth2/authorize?client_id=1434713314289651776&permissions=3213312&integration_type=0&scope=bot" class="btn-primary" rel="noopener noreferrer" target="_blank">
         サーバーに追加
       </a>
       <a href="#commands" class="btn-secondary">
@@ -703,7 +721,7 @@
 <section class="cta">
   <h2 class="reveal">サーバーに<br>追加する。</h2>
   <p class="reveal">導入は1分以内。特別な設定は不要です。</p>
-  <a href="https://discord.com/oauth2/authorize?client_id=1434713314289651776&permissions=3213312&integration_type=0&scope=bot" class="btn-primary reveal">
+  <a href="https://discord.com/oauth2/authorize?client_id=1434713314289651776&permissions=3213312&integration_type=0&scope=bot" class="btn-primary reveal" rel="noopener noreferrer" target="_blank">
     サーバーに追加する
   </a>
 </section>
@@ -718,20 +736,48 @@
 </footer>
 
 <script>
-  document.getElementById("year").textContent = new Date().getFullYear();
+  // ===== SECURITY: すべてのDOM操作はtextContent/classListを使用 (innerHTML禁止) =====
 
-  // Scroll reveal
+  // 年表示: textContentで安全にセット
+  const yearEl = document.getElementById("year");
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  // ===== Scroll Reveal =====
   const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        entry.target.style.transitionDelay = (i * 0.05) + 's';
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-  reveals.forEach(el => observer.observe(el));
+  if (typeof IntersectionObserver !== 'undefined') {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          const delay = Math.min(i * 0.05, 1); // 最大1秒に制限
+          entry.target.style.transitionDelay = delay + 's';
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+  } else {
+    // IntersectionObserver非対応ブラウザのフォールバック
+    reveals.forEach(el => el.classList.add('visible'));
+  }
+
+  // ===== SECURITY: Clickjacking 二重防止 =====
+  // ページがiframe内に埋め込まれている場合はトップレベルにリダイレクト
+  if (window.self !== window.top) {
+    try {
+      window.top.location.href = window.self.location.href;
+    } catch (e) {
+      document.body.style.display = 'none';
+    }
+  }
+
+  // ===== SECURITY: 外部リンク安全チェック (動的に付与) =====
+  document.querySelectorAll('a[href^="http"]').forEach(link => {
+    link.setAttribute('rel', 'noopener noreferrer');
+    if (!link.getAttribute('target')) {
+      link.setAttribute('target', '_blank');
+    }
+  });
 </script>
 
 </body>

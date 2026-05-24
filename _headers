@@ -1,0 +1,35 @@
+/*
+  # ================================================================
+  # _headers — Cloudflare Pages / Netlify / Vercel 用 HTTPヘッダー設定
+  # GitHub Pages では無効 (静的ホストのためヘッダー設定不可)
+  # Cloudflare Pages に移行したら即座に有効になります (無料プランOK)
+  # ================================================================
+
+  # Content Security Policy (CSP)
+  # XSS・インジェクション・クリックジャッキング対策の要
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https://cdn.discordapp.com data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests;
+
+  # クリックジャッキング完全防止
+  X-Frame-Options: DENY
+
+  # MIMEスニッフィング防止
+  X-Content-Type-Options: nosniff
+
+  # リファラー漏洩制御
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # XSS Protectionヘッダー (旧ブラウザ向け)
+  X-XSS-Protection: 1; mode=block
+
+  # HTTPS強制 (HSTS): 1年間HTTPSのみ許可、サブドメインも含む
+  # 注意: 一度設定するとブラウザが1年間HTTPに戻れなくなる。確実にHTTPS運用できる場合のみ有効化
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+  # 許可するブラウザ機能を最小限に絞る (Permissions Policy)
+  # カメラ・マイク・位置情報・決済など不要な機能をすべて無効化
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), magnetometer=(), gyroscope=(), accelerometer=()
+
+  # Cross-Origin設定: リソースの不正読み取り防止
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
+  Cross-Origin-Resource-Policy: same-origin
