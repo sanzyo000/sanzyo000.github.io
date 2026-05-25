@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>利用規約 — sanzyo music</title>
+<title>プライバシーポリシー — sanzyo music</title>
 
 <!-- ========== SECURITY HEADERS ========== -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests;">
@@ -139,11 +139,11 @@
   }
 
   /* ===== SECTIONS ===== */
-  .tos-section {
+  .pp-section {
     margin-bottom: 3rem;
   }
 
-  .tos-section h2 {
+  .pp-section h2 {
     font-size: 1.1rem;
     font-weight: 800;
     letter-spacing: 0.04em;
@@ -152,20 +152,20 @@
     border-left: 3px solid var(--dark);
   }
 
-  .tos-section p {
+  .pp-section p {
     font-size: 0.95rem;
     color: var(--ink);
     margin-bottom: 0.8rem;
     padding-left: 1rem;
   }
 
-  .tos-section ul {
+  .pp-section ul {
     list-style: none;
     padding-left: 1rem;
     margin-bottom: 0.8rem;
   }
 
-  .tos-section ul li {
+  .pp-section ul li {
     font-size: 0.95rem;
     color: var(--ink);
     padding: 0.4rem 0;
@@ -173,14 +173,14 @@
     position: relative;
   }
 
-  .tos-section ul li::before {
+  .pp-section ul li::before {
     content: '—';
     position: absolute;
     left: 0;
     color: var(--mid);
   }
 
-  .warning-box {
+  .info-box {
     background: var(--mark);
     border: 1px solid var(--mid);
     border-left: 3px solid var(--dark);
@@ -190,7 +190,7 @@
     color: var(--ink);
   }
 
-  .warning-box strong {
+  .info-box strong {
     display: block;
     font-weight: 800;
     margin-bottom: 0.4rem;
@@ -227,6 +227,18 @@
     opacity: 0.5;
   }
 
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .footer-links a {
+    font-size: 0.8rem;
+    color: var(--mid);
+    text-decoration: none;
+    border-bottom: 1px solid var(--mid);
+  }
+
   @media (max-width: 768px) {
     nav { padding: 1rem 1.5rem; }
     .nav-links { display: none; }
@@ -256,81 +268,69 @@
 
   <div class="page-header">
     <span class="label">Legal</span>
-    <h1>利用規約</h1>
+    <h1>プライバシーポリシー</h1>
     <p class="updated">最終更新日：<span id="updated-date"></span></p>
   </div>
 
   <!-- 1 -->
-  <div class="tos-section">
-    <h2>第1条　適用</h2>
-    <p>本利用規約（以下「本規約」）は、sanzyo music（以下「本BOT」）の利用に関する条件を定めるものです。本BOTを導入・使用したユーザーおよびサーバー管理者（以下「ユーザー」）は、本規約に同意したものとみなします。</p>
+  <div class="pp-section">
+    <h2>第1条　基本方針</h2>
+    <p>sanzyo music（以下「本BOT」）は、ユーザーのプライバシーを尊重し、個人情報の保護に努めます。本プライバシーポリシーは、本BOTが取り扱う情報の種類・目的・管理方法について説明するものです。</p>
   </div>
 
   <!-- 2 -->
-  <div class="tos-section">
-    <h2>第2条　Discord利用規約の遵守</h2>
-    <p>本BOTの使用にあたっては、Discordの利用規約（Discord Terms of Service）およびコミュニティガイドラインを遵守することが前提条件です。</p>
+  <div class="pp-section">
+    <h2>第2条　取得する情報</h2>
+    <p>本BOTはコマンドの処理に際し、以下の情報を一時的に参照します。</p>
     <ul>
-      <li>Discord利用規約に違反する行為への本BOTの使用を禁じます</li>
-      <li>Discordの年齢制限（13歳以上）を満たさないユーザーは使用できません</li>
-      <li>Discord側の規約変更により本BOTの機能が制限される場合があります</li>
+      <li>DiscordサーバーID（コマンドが実行されたサーバーの識別）</li>
+      <li>DiscordユーザーID（コマンドを実行したユーザーの識別）</li>
+      <li>コマンドの内容および再生リクエストのURL・キーワード</li>
     </ul>
+    <div class="info-box">
+      <strong>📌 保存について</strong>
+      上記の情報はコマンド処理のためにのみ使用され、データベースやログファイルへの永続的な保存は一切行いません。処理完了後は即座に破棄されます。
+    </div>
   </div>
 
   <!-- 3 -->
-  <div class="tos-section">
-    <h2>第3条　禁止事項</h2>
-    <p>以下の行為を禁止します。</p>
-
-    <div class="warning-box">
-      <strong>⚠ 成人向けコンテンツの再生禁止</strong>
-      本BOTはyt-dlpを利用しており、技術的にPornHubをはじめとする成人向けサイトのコンテンツを再生できる場合があります。しかし、そのような用途での使用は本規約により明示的に禁止します。違反が確認された場合、予告なくサービス提供を停止することがあります。
-    </div>
-
+  <div class="pp-section">
+    <h2>第3条　情報の利用目的</h2>
+    <p>取得した情報は以下の目的にのみ使用します。</p>
     <ul>
-      <li>成人向けコンテンツ・性的コンテンツの再生</li>
-      <li>著作権者の許諾なしに楽曲・動画を無断複製・配布する行為</li>
-      <li>ヘイトスピーチ・差別的コンテンツの再生・拡散</li>
-      <li>本BOTを利用した嫌がらせ・ハラスメント行為</li>
-      <li>本BOTのリバースエンジニアリング・改ざん・不正アクセス</li>
-      <li>スパム・過剰なコマンド送信によるサービスの妨害</li>
+      <li>コマンドの正常な処理および音楽再生機能の提供</li>
+      <li>不正利用・規約違反の検知および対応</li>
     </ul>
+    <p>取得した情報を第三者に販売・提供・開示することは一切ありません。</p>
   </div>
 
   <!-- 4 -->
-  <div class="tos-section">
-    <h2>第4条　免責事項</h2>
-    <p>本BOTの提供者は以下について責任を負いません。</p>
+  <div class="pp-section">
+    <h2>第4条　第三者サービスについて</h2>
+    <p>本BOTはYouTube・ニコニコ動画・Spotifyなどの外部サービスと連携します。これらのサービスには各社独自のプライバシーポリシーが適用されます。本BOTは外部サービス上でのユーザーの行動について責任を負いません。</p>
     <ul>
-      <li>本BOTの利用または利用不能により生じた損害</li>
-      <li>YouTube・ニコニコ動画・Spotifyなど外部サービスの仕様変更・停止による機能不全</li>
-      <li>ユーザーが再生したコンテンツの著作権侵害に関する責任</li>
-      <li>サーバーのダウンタイムやメンテナンスによるサービス中断</li>
+      <li>YouTube: Google LLC のプライバシーポリシーに準拠</li>
+      <li>Spotify: Spotify AB のプライバシーポリシーに準拠</li>
+      <li>ニコニコ動画: 株式会社ドワンゴのプライバシーポリシーに準拠</li>
     </ul>
-    <p>コンテンツの著作権に関する責任は、再生を指示したユーザー自身が負うものとします。</p>
   </div>
 
   <!-- 5 -->
-  <div class="tos-section">
-    <h2>第5条　サービスの変更・停止</h2>
-    <p>本BOTの提供者は、以下の場合に予告なくサービスを変更・停止できるものとします。</p>
-    <ul>
-      <li>システムのメンテナンス・アップデート時</li>
-      <li>外部サービスの仕様変更により継続が困難な場合</li>
-      <li>その他、提供者が必要と判断した場合</li>
-    </ul>
+  <div class="pp-section">
+    <h2>第5条　Discordのデータポリシー</h2>
+    <p>本BOTはDiscord上で動作するため、Discordのデータポリシーおよびプライバシーポリシーも同時に適用されます。Discordが収集・管理するデータについては、Discord社のプライバシーポリシーをご確認ください。</p>
   </div>
 
   <!-- 6 -->
-  <div class="tos-section">
-    <h2>第6条　規約の変更</h2>
-    <p>本規約は予告なく変更される場合があります。変更後も本BOTを使用し続けた場合、変更後の規約に同意したものとみなします。最新の規約は常に本ページにて確認できます。</p>
+  <div class="pp-section">
+    <h2>第6条　ポリシーの変更</h2>
+    <p>本プライバシーポリシーは予告なく変更される場合があります。変更後も本BOTを使用し続けた場合、変更後のポリシーに同意したものとみなします。最新の内容は常に本ページにて確認できます。</p>
   </div>
 
   <!-- 7 -->
-  <div class="tos-section">
+  <div class="pp-section">
     <h2>第7条　お問い合わせ</h2>
-    <p>本規約に関するご質問は、X（Twitter）の公式アカウントまでお問い合わせください。</p>
+    <p>プライバシーに関するご質問・ご要望は、X（Twitter）の公式アカウントまでお問い合わせください。</p>
     <ul>
       <li>X（Twitter）: <a href="https://x.com/sanzyo_d" rel="noopener noreferrer" target="_blank">@sanzyo_d</a></li>
     </ul>
